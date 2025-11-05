@@ -1,9 +1,9 @@
 # Parallel N-Body Simulation
 
 ## Overview
-This project simulates an N-body system using C++ and OpenMP.  
-It calculates gravitational forces between particles and updates their positions and velocities over time.  
-Parallelization uses the provided OmpLoop::parfor().
+This project compares the formerly made nbody.cpp code and
+the updated nbody-par code to see how parallelism affects
+the runtime of each.
 
 ## Files
 - `src/` : Source code
