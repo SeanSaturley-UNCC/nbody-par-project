@@ -35,8 +35,11 @@ sbatch run_batch.sh
 - Values separated by tabs (.tsv)
 
 
-# Performance Comparison
-Configuration	Sequential (s)	Parallel (s)	Speedup
-100 particles	0.948	4.135	0.23x
-1000 particles	51.769	36.757	1.41x
-Solar System	2.918	137.454	0.02x
+## Performance Comparison
+
+| Configuration   | Sequential (s) | Parallel (s) | Speedup |
+|-----------------|----------------|--------------|---------|
+| 100 particles   | 0.948          | 4.135        | 0.23x   |
+| 1000 particles  | 51.769         | 36.757       | 1.41x   |
+| Solar System    | 2.918          | 137.454      | 0.02x   |
+
