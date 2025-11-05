@@ -13,7 +13,6 @@ Parallelization uses the provided OmpLoop::parfor().
 - `run_batch.sh` : Batch script for Centaurus
 
 ## Compile
-bash
 make
 
 ## Run Sequential:
