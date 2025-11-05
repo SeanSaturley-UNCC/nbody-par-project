@@ -5,7 +5,7 @@
 #include <string>
 #include <cstddef>
 
-// gravitational constant (defined in nbody_functions.cpp)
+// gravitational constant (fonud in nbody_functions.cpp)
 extern double G;
 
 struct simulation {
@@ -23,7 +23,7 @@ void random_init(simulation& s);
 void init_solar(simulation& s);
 void load_from_file(simulation& s, const std::string& filename);
 
-// basic ops (shared by sequential & parallel mains)
+// used by both parallel and seq
 void reset_force(simulation& s);
 void apply_force(simulation& s, size_t i, double dt);
 void update_position(simulation& s, size_t i, double dt);
