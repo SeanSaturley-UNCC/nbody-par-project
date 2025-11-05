@@ -12,7 +12,10 @@ module load gcc/12.2.0
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Random 100 particles
+
 ./bin/nbody-par 100 1 10000 100 $OMP_NUM_THREADS > output/random-100-par.tsv
+
+
 
 # Random 1000 particles
 ./bin/nbody-par 1000 1 10000 100 $OMP_NUM_THREADS > output/random-1000-par.tsv
