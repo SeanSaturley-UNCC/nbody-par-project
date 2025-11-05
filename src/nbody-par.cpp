@@ -6,19 +6,19 @@
 #include <string>
 #include <cmath>
 
-// compute forces in parallel: outer loop over i (each i accumulated by its thread)
+// sequential force computation
 void compute_forces_parallel(simulation& s, double softening) {
-    // Reset forces first (parallel)
+   
+    // reset forces first (
     OmpLoop::parfor(0, s.nbpart, [&](std::size_t i){
         s.fx[i] = s.fy[i] = s.fz[i] = 0.0;
     });
 
-    // For each target particle i, compute the total force acting on i
+    // compute the total force acting on i for each particle i
     OmpLoop::parfor(0, s.nbpart, [&](std::size_t i){
         double xi = s.x[i], yi = s.y[i], zi = s.z[i];
         double mi = s.mass[i];
         double fx = 0.0, fy = 0.0, fz = 0.0;
-
         for (std::size_t j = 0; j < s.nbpart; ++j) {
             if (j == i) continue;
             double dx = s.x[j] - xi;
@@ -32,8 +32,6 @@ void compute_forces_parallel(simulation& s, double softening) {
             fy += dy * f;
             fz += dz * f;
         }
-
-        // write results to shared arrays (only this i writes these slots)
         s.fx[i] = fx;
         s.fy[i] = fy;
         s.fz[i] = fz;
@@ -41,7 +39,7 @@ void compute_forces_parallel(simulation& s, double softening) {
 }
 
 int main(int argc, char* argv[]) {
-    // usage: <input> <dt> <nbstep> <printevery> <nbthreads>
+    // usage: <input> <dt> <nbstep> <printevery> and now <nbthreads>
     if (argc != 6) {
         std::cerr << "usage: " << argv[0] << " <input> <dt> <nbstep> <printevery> <nbthreads>\n";
         std::cerr << "input: number (random), 'planet', or filename\n";
@@ -52,10 +50,12 @@ int main(int argc, char* argv[]) {
     double dt = std::atof(argv[2]);
     size_t nbstep = std::stoul(argv[3]);
     size_t printevery = std::stoul(argv[4]);
+
+    // new 
     int nbthreads = std::atoi(argv[5]);
 
-    // init sim
     simulation s(1);
+    // init
     char* endptr = nullptr;
     long parsed = std::strtol(argv[1], &endptr, 10);
     if (endptr != argv[1] && parsed > 0) {
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
         else load_from_file(s, input);
     }
 
-    // configure the OmpLoop wrapper
+    // configure omploop wrapper
     OmpLoop::setNbThread(nbthreads);
     OmpLoop::setGranularity(1);
 
@@ -75,14 +75,17 @@ int main(int argc, char* argv[]) {
     for (size_t step = 0; step < nbstep; ++step) {
         if (step % printevery == 0) dump_state(s);
         compute_forces_parallel(s, softening);
-        // integrate: update velocities & positions in parallel
+        
+        // integrate (apply forces then update positions)
         OmpLoop::parfor(0, s.nbpart, [&](std::size_t i){
             apply_force(s, i, dt);
         });
+       
         OmpLoop::parfor(0, s.nbpart, [&](std::size_t i){
             update_position(s, i, dt);
         });
     }
 
+    
     return 0;
 }
